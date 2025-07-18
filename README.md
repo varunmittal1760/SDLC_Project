@@ -75,7 +75,7 @@ This project's key innovation was its methodology. We treated the AI as a develo
 
 -   **Objective:** Ensure the application works as expected and fix errors.
 -   **Process:** We used Thunder Client to manually test the API endpoints. When errors occurred (e.g., `ModuleNotFoundError`, `404 Not Found`, incorrect headers), we fed the error messages back to the AI.
--   **AI Prompt:** *"I'm getting this error: 'ModuleNotFoundError: No module named 'flask_cors''. What does it mean and how do I fix it?"*
+-   **AI Prompt:** *"I'm getting this error. What does it mean and how do I fix it?"*
 -   **AI Output:** Correctly diagnosed the environment issue and provided the exact commands to resolve it.
 -   **Result:** Dramatically reduced debugging time by using the AI as an interactive diagnostic tool.
 
