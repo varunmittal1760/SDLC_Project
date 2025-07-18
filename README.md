@@ -68,7 +68,7 @@ This project's key innovation was its methodology. We treated the AI as a develo
     -   *"Write the Python Flask code for the `POST /api/gardens/{garden_id}/events` endpoint..."*
     -   *"Now, write the code for the `GET` endpoint..."*
     -   *"Build the frontend for this application in a single `index.html` file using Tailwind CSS and JavaScript..."*
--   **AI Output:** Generated complete, runnable code for `app.py` (originally `main.py`) and `index.html`, including backend logic, API communication, styling, and error handling.
+-   **AI Output:** Generated complete, runnable code for `app.py` and `index.html`, including backend logic, API communication, styling, and error handling.
 -   **Result:** Automated the creation of over 90% of the initial codebase. Our role shifted from *writing* code to *integrating and verifying* AI-generated code.
 
 ### Phase 4: Testing & Debugging
