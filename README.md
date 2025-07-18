@@ -105,7 +105,7 @@ This project's key innovation was its methodology. We treated the AI as a develo
 
 5.  **Run the Backend Server:**
     ```bash
-    # If you named the file app.py 
+    # Run the App
     flask run
 
     ```
