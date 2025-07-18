@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenFingers SG - Events</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom background pattern */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0fdf4; /* A very light green */
+            /* CORRECTED: Removed backticks and formatted as a valid CSS value */
+            background-image:
+                radial-gradient(#a7f3d0 0.5px, transparent 0.5px),
+                radial-gradient(#a7f3d0 0.5px, #f0fdf4 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto max-w-5xl p-4 sm:p-8">
+
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <div class="inline-block bg-green-600 text-white p-3 rounded-full mb-4 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M17.713,3.287a1,1,0,0,0-1.414,0L14,5.586V4a1,1,0,0,0-2,0V7a1,1,0,0,0,1,1H16a1,1,0,0,0,0-2H14.414l2.293-2.293A1,1,0,0,0,17.713,3.287Z" />
+                    <path d="M10,2a8,8,0,1,0,8,8A8.009,8.009,0,0,0,10,2ZM6,12a1,1,0,0,1-2,0V9A1,1,0,0,1,5,8H8a1,1,0,0,1,0,2H6v2Z" />
+                </svg>
+            </div>
+            <h1 class="text-5xl font-extrabold text-slate-800">GreenFingers SG</h1>
+            <p class="text-slate-500 mt-2 text-lg">Your Community Garden's Digital Hub</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+            <!-- Left Column: Create Event Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white p-6 rounded-xl shadow-xl transform transition-all hover:scale-[1.02]">
+                    <h2 class="text-2xl font-bold mb-5 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Create New Event
+                    </h2>
+                    <form id="create-event-form" class="space-y-4">
+                        <div>
+                            <label for="title" class="block text-sm font-medium text-slate-700 mb-1">Title</label>
+                            <input type="text" id="title" name="title" required placeholder="e.g., Weekend Weeding Session" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
+                        </div>
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                            <textarea id="description" name="description" rows="3" required placeholder="What needs to be done?" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"></textarea>
+                        </div>
+                        <div>
+                            <label for="event_date" class="block text-sm font-medium text-slate-700 mb-1">Event Date & Time</label>
+                            <input type="datetime-local" id="event_date" name="event_date" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
+                        </div>
+                        <button type="submit" id="submit-button" class="w-full flex items-center justify-center bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            Add Event
+                        </button>
+                    </form>
+                    <div id="form-message" class="mt-4 text-sm text-center h-5"></div>
+                </div>
+            </div>
+
+            <!-- Right Column: Event List -->
+            <div class="lg:col-span-3">
+                <h2 class="text-3xl font-bold mb-5 text-slate-800">Upcoming Events</h2>
+                <div id="event-list" class="space-y-4">
+                    <!-- Events will be dynamically inserted here by JavaScript -->
+                    <p id="loading-message" class="text-slate-500">Loading events...</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const API_BASE_URL = 'http://127.0.0.1:5000';
+        const GARDEN_ID = 1; 
+        const USER_ID = 1; 
+
+        // --- DOM Elements ---
+        const eventList = document.getElementById('event-list');
+        const createEventForm = document.getElementById('create-event-form');
+        const loadingMessage = document.getElementById('loading-message');
+        const formMessage = document.getElementById('form-message');
+        const submitButton = document.getElementById('submit-button');
+
+        // --- Functions ---
+        async function fetchAndDisplayEvents() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/gardens/${GARDEN_ID}/events`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const events = await response.json();
+                
+                eventList.innerHTML = '';
+
+                if (events.length === 0) {
+                    eventList.innerHTML = `
+                        <div class="text-center bg-white p-10 rounded-xl shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h3 class="mt-2 text-lg font-medium text-slate-800">No events scheduled yet</h3>
+                            <p class="mt-1 text-sm text-slate-500">Use the form on the left to create one!</p>
+                        </div>`;
+                } else {
+                    events.forEach(event => {
+                        const eventElement = document.createElement('div');
+                        eventElement.className = 'bg-white p-5 rounded-xl shadow-lg border-l-4 border-green-500 transform transition-transform hover:-translate-y-1 hover:shadow-2xl';
+                        
+                        const eventDate = new Date(event.event_date);
+                        const formattedDate = eventDate.toLocaleString('en-US', {
+                            dateStyle: 'full',
+                            timeStyle: 'short'
+                        });
+
+                        eventElement.innerHTML = `
+                            <h3 class="font-bold text-xl text-slate-800">${event.title}</h3>
+                            <div class="flex items-center text-sm text-slate-500 my-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>${formattedDate}</span>
+                            </div>
+                            <p class="text-slate-600">${event.description}</p>
+                        `;
+                        eventList.appendChild(eventElement);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching events:', error);
+                eventList.innerHTML = '<p class="text-red-500">Could not load events. Make sure the backend server is running.</p>';
+            }
+        }
+
+        async function handleCreateEvent(e) {
+            e.preventDefault();
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Creating...`;
+            submitButton.disabled = true;
+
+            const formData = new FormData(createEventForm);
+            const eventData = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                event_date: new Date(formData.get('event_date')).toISOString(),
+            };
+            
+            formMessage.textContent = '';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/gardens/${GARDEN_ID}/events`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-User-ID': USER_ID.toString()
+                    },
+                    body: JSON.stringify(eventData)
+                });
+
+                if (!response.ok) {
+                    const errorResult = await response.json();
+                    throw new Error(errorResult.error || 'Failed to create event');
+                }
+                
+                formMessage.textContent = 'Event created successfully!';
+                formMessage.className = 'mt-4 text-sm text-center h-5 text-green-600';
+                createEventForm.reset();
+                await fetchAndDisplayEvents();
+
+            } catch (error) {
+                console.error('Error creating event:', error);
+                formMessage.textContent = `Error: ${error.message}`;
+                formMessage.className = 'mt-4 text-sm text-center h-5 text-red-600';
+            } finally {
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                setTimeout(() => formMessage.textContent = '', 3000);
+            }
+        }
+
+        createEventForm.addEventListener('submit', handleCreateEvent);
+        document.addEventListener('DOMContentLoaded', fetchAndDisplayEvents);
+    </script>
+</body>
+</html>
