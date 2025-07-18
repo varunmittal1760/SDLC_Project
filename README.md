@@ -89,8 +89,8 @@ This project's key innovation was its methodology. We treated the AI as a develo
 
 2.  **Clone the Repository:**
     ```bash
-    git clone <your-repo-url>
-    cd <your-repo-directory>
+    git clone https://github.com/varunmittal1760/SDLC_Project.git
+    cd SDLC_Project
     ```
 
 3.  **Set Up a Virtual Environment:**
