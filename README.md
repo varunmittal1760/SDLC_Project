@@ -98,10 +98,9 @@ This project's key innovation was its methodology. We treated the AI as a develo
     python -m venv venv
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
     ```
-
 4.  **Install Dependencies:**
     ```bash
-    pip install Flask Flask-Cors
+    pip install -r requirements.txt
     ```
 
 5.  **Run the Backend Server:**
