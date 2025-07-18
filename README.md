@@ -11,7 +11,7 @@ This project documents the rapid development of a full-stack web application pro
 
 Using a conversational AI, we moved from a high-level concept to a functional, locally-hosted application in a fraction of the time required by traditional methods. The final product features a clean, modern user interface for creating and viewing events, powered by a Python Flask backend.
 
-
+<img width="1210" height="827" alt="Image" src="https://github.com/user-attachments/assets/8a34e97d-ac49-46b2-80c0-2e43f46aafd3" />
 ---
 
 ## 2. Core Features
